@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cerberus IDE — The Three-Headed Code Beast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+  :root {
+    --bg: #080b0f;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --surface: #161d26;
+    --border: #1e2d3d;
+    --border2: #243040;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #ff4757;
+    --green: #00ff88;
+    --yellow: #ffd700;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #484f58;
+    --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+    --glow2: 0 0 40px rgba(0, 212, 255, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── MATRIX RAIN CANVAS ─── */
+  #matrix-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── SCAN LINES ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ─── GRID BACKGROUND ─── */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8, 11, 15, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .nav-logo .logo-icon {
+    width: 36px;
+    height: 36px;
+    position: relative;
+  }
+
+  .nav-logo .logo-icon svg {
+    width: 100%; height: 100%;
+  }
+
+  .nav-logo .accent { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--text2);
+    background: var(--surface);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 100px;
+    background: rgba(0, 212, 255, 0.05);
+    margin-bottom: 32px;
+  }
+
+  .hero-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(56px, 9vw, 120px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -3px;
+    margin-bottom: 8px;
+  }
+
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0, 212, 255, 0.4);
+    display: block;
+  }
+
+  .hero h1 .cursor {
+    display: inline-block;
+    width: 4px;
+    height: 0.85em;
+    background: var(--accent);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .hero-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 560px;
+    line-height: 1.8;
+    margin: 28px auto 48px;
+    letter-spacing: 0.2px;
+  }
+
+  .hero-subtitle .hl { color: var(--accent); }
+
+  /* ─── CTA BUTTONS ─── */
+  .cta-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 64px;
+  }
+
+  .btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.4s;
+  }
+
+  .btn-primary:hover::before { left: 100%; }
+
+  .btn-primary:hover {
+    background: #22e5ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.4);
+  }
+
+  .btn-primary svg { width: 18px; height: 18px; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 32px;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0, 212, 255, 0.05);
+  }
+
+  /* ─── VERSION INFO ─── */
+  .version-info {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .version-info .sep { opacity: 0.3; }
+  .version-info .v-tag { color: var(--green); }
+
+  /* ─── TERMINAL WINDOW ─── */
+  .terminal-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto 80px;
+    padding: 0 48px;
+  }
+
+  .terminal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 32px 64px rgba(0,0,0,0.6),
+      0 0 80px rgba(0, 212, 255, 0.05);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot-r { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .dot-y { width: 12px; height: 12px; border-radius: 50%; background: #febc2e; }
+  .dot-g { width: 12px; height: 12px; border-radius: 50%; background: #28c840; }
+
+  .terminal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .terminal-body {
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    min-height: 220px;
+  }
+
+  .term-line { display: flex; gap: 12px; }
+  .term-prompt { color: var(--green); white-space: nowrap; }
+  .term-cmd { color: var(--text); }
+  .term-out { color: var(--text2); padding-left: 0; }
+  .term-accent { color: var(--accent); }
+  .term-yellow { color: var(--yellow); }
+  .term-green { color: var(--green); }
+  .term-dim { color: var(--text3); }
+
+  /* ─── STATS ─── */
+  .stats-bar {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 80px;
+  }
+
+  .stats-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .stat-item {
+    padding: 32px 24px;
+    background: var(--bg2);
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .stat-item:hover { background: var(--surface); }
+
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ─── FEATURES ─── */
+  .features {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 80px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .feature-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border2);
+    background: var(--surface);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 18px;
+  }
+
+  .feature-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ─── DOWNLOAD SECTION ─── */
+  .download-section {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 80px;
+  }
+
+  .download-box {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-box::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent), var(--green));
+  }
+
+  .download-glow {
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .download-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .download-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .download-desc {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  .release-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .release-badge .ver {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  .release-badge .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .download-platforms {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .platform-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 20px 20px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .platform-btn::after {
+    content: attr(data-size);
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .platform-btn:hover {
+    border-color: var(--accent);
+    background: rgba(0, 212, 255, 0.04);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .platform-btn.coming-soon {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .platform-btn.coming-soon:hover {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: none;
+  }
+
+  .platform-os {
+    font-size: 22px;
+  }
+
+  .platform-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .platform-arch {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .platform-coming {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 2;
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text2);
+  }
+
+  .footer-logo span { color: var(--accent); }
+
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ─── GLOW ORBS ─── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+  }
+
+  .orb-1 {
+    width: 600px; height: 600px;
+    top: -200px; left: -200px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+  }
+
+  .orb-2 {
+    width: 500px; height: 500px;
+    bottom: 100px; right: -150px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .hero h1 { font-size: 48px; letter-spacing: -2px; }
+    .terminal-wrapper { padding: 0 20px; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .features { padding: 0 20px 60px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .download-section { padding: 0 20px 60px; }
+    .download-platforms { grid-template-columns: 1fr; }
+    footer { padding: 28px 20px; flex-direction: column; align-items: flex-start; }
+    .stats-bar { padding: 0 20px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<canvas id="matrix-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" stroke="#00d4ff" stroke-width="1.5" opacity="0.3"/>
+        <path d="M10 26 L10 10 L14 14 L18 10 L22 14 L26 10 L26 26" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="10" cy="10" r="2.5" fill="#00d4ff"/>
+        <circle cx="18" cy="10" r="2.5" fill="#00d4ff"/>
+        <circle cx="26" cy="10" r="2.5" fill="#00d4ff"/>
+        <path d="M10 26 L26 26" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+    </div>
+    CERBERUS<span class="accent">IDE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#download">Download</a></li>
+    <li><a href="https://github.com" target="_blank">GitHub</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+  <div class="nav-badge">v1.0.0 — STABLE</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">
+    <span class="dot"></span>
+    Three Heads. One IDE. Infinite Power.
+  </div>
+
+  <h1>
+    <span class="line1">CERBERUS</span>
+    <span class="line2">IDE<span class="cursor"></span></span>
+  </h1>
+
+  <p class="hero-subtitle">
+    The <span class="hl">three-headed</span> code beast that guards your workflow.<br>
+    Terminal-native. Lightning fast. Built for the <span class="hl">ones who ship</span>.
+  </p>
+
+  <div class="cta-group">
+    <a href="#download" class="btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download Now — Free
+    </a>
+    <a href="https://github.com" target="_blank" class="btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+      </svg>
+      View on GitHub
+    </a>
+  </div>
+
+  <div class="version-info">
+    <span class="v-tag">v1.0.0</span>
+    <span class="sep">|</span>
+    <span>MIT License</span>
+    <span class="sep">|</span>
+    <span>Cross-Platform</span>
+    <span class="sep">|</span>
+    <span>Open Source</span>
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<div class="terminal-wrapper">
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <div class="dot-r"></div>
+        <div class="dot-y"></div>
+        <div class="dot-g"></div>
+      </div>
+      <span class="terminal-title">cerberus-ide — bash — 120×40</span>
+    </div>
+    <div class="terminal-body" id="term-body">
+      <div class="term-line">
+        <span class="term-prompt">cerberus@ide:~$</span>
+        <span class="term-cmd" id="typed-cmd"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num" data-target="128">0</div>
+      <div class="stat-label">Languages</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="50">0</div>
+      <div class="stat-label">ms Startup</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="2400">0</div>
+      <div class="stat-label">Extensions</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="99">0</div>
+      <div class="stat-label">% Uptime</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-header">
+    <div class="section-tag">// CAPABILITIES</div>
+    <h2 class="section-title">Three Heads, One Vision</h2>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Blazing Fast</h3>
+      <p>Sub-50ms cold start. Written in systems-level code for maximum performance. No Electron. No bloat.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <h3>AI-Powered Core</h3>
+      <p>Built-in intelligence for code completion, refactoring, and bug detection. Context-aware from the first keystroke.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔌</div>
+      <h3>Extensible</h3>
+      <p>2400+ extensions. Full LSP support. Bring your own plugins. The ecosystem you love, without the overhead.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥️</div>
+      <h3>Terminal-Native</h3>
+      <p>Deeply integrated terminal multiplexer. Split panes, sessions, history. Code and shell as one.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>Remote Ready</h3>
+      <p>SSH, containers, WSL — edit anything, anywhere. Remote editing feels exactly like local.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>Fully Themeable</h3>
+      <p>128-color terminal themes. Custom syntax highlighting. Your editor, your aesthetic. Always dark, always sharp.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section class="download-section" id="download">
+  <div class="download-box">
+    <div class="download-glow"></div>
+
+    <div class="download-header">
+      <div>
+        <div class="download-title">Download Cerberus IDE</div>
+        <div class="download-desc">Free and open source. Always. Pick your platform and start shipping.</div>
+      </div>
+      <div class="release-badge">
+        <div class="ver">v1.0.0</div>
+        <div class="date">STABLE RELEASE</div>
+      </div>
+    </div>
+
+    <div class="download-platforms">
+      <a href="#" class="platform-btn" data-size="~85 MB" id="win-btn">
+        <div class="platform-os">🪟</div>
+        <div class="platform-name">Windows</div>
+        <div class="platform-arch">x64 / ARM64 · .exe installer</div>
+      </a>
+
+      <a href="#" class="platform-btn" data-size="~78 MB" id="mac-btn">
+        <div class="platform-os">🍎</div>
+        <div class="platform-name">macOS</div>
+        <div class="platform-arch">Intel + Apple Silicon · .dmg</div>
+      </a>
+
+      <a href="#" class="platform-btn" data-size="~72 MB" id="linux-btn">
+        <div class="platform-os">🐧</div>
+        <div class="platform-name">Linux</div>
+        <div class="platform-arch">.deb / .rpm / AppImage</div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">CERBERUS<span>IDE</span></div>
+  <div class="footer-copy">© 2024 CerberusIDE. Open source. MIT License.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">License</a>
+    <a href="#">Changelog</a>
+    <a href="https://github.com" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<script>
+// ── MATRIX RAIN ──
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01ABCDEF</>{}[]()';
+const fontSize = 14;
+let cols = Math.floor(canvas.width / fontSize);
+let drops = Array(cols).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(8, 11, 15, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00d4ff';
+  ctx.font = fontSize + 'px JetBrains Mono';
+
+  for (let i = 0; i < drops.length; i++) {
+    const char = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+
+setInterval(drawMatrix, 50);
+
+// ── TERMINAL TYPEWRITER ──
+const commands = [
+  { cmd: 'cerberus --version', out: [
+    '<span class="term-green">Cerberus IDE v1.0.0</span>',
+    '<span class="term-dim">Build: stable · Runtime: native · Heads: 3</span>'
+  ]},
+  { cmd: 'cerberus run --project ./my-app', out: [
+    '<span class="term-accent">▶ Starting Cerberus IDE...</span>',
+    '<span class="term-green">✓ LSP servers initialized (128ms)</span>',
+    '<span class="term-green">✓ Extensions loaded: 2,400+</span>',
+    '<span class="term-yellow">⚡ Ready in 47ms</span>'
+  ]},
+  { cmd: 'cerberus install --extension ai-copilot', out: [
+    '<span class="term-dim">Fetching: ai-copilot@2.4.1...</span>',
+    '<span class="term-green">✓ Installed successfully</span>',
+    '<span class="term-accent">↻ Reload to activate</span>'
+  ]}
+];
+
+const termBody = document.getElementById('term-body');
+let cmdIdx = 0;
+
+function typeCommand(cmdObj) {
+  const cmdEl = document.createElement('div');
+  cmdEl.className = 'term-line';
+  cmdEl.innerHTML = '<span class="term-prompt">cerberus@ide:~$</span><span class="term-cmd"></span>';
+  termBody.appendChild(cmdEl);
+  const span = cmdEl.querySelector('.term-cmd');
+  let i = 0;
+
+  const typing = setInterval(() => {
+    span.textContent = cmdObj.cmd.slice(0, ++i);
+    if (i >= cmdObj.cmd.length) {
+      clearInterval(typing);
+      setTimeout(() => showOutput(cmdObj.out), 300);
+    }
+  }, 40);
+}
+
+function showOutput(lines) {
+  lines.forEach((line, i) => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'term-line';
+      div.innerHTML = '<span class="term-out">' + line + '</span>';
+      termBody.appendChild(div);
+
+      if (i === lines.length - 1) {
+        setTimeout(() => {
+          if (termBody.children.length > 20) {
+            while (termBody.children.length > 2) {
+              termBody.removeChild(termBody.firstChild);
+            }
+          }
+          cmdIdx = (cmdIdx + 1) % commands.length;
+          setTimeout(() => typeCommand(commands[cmdIdx]), 1000);
+        }, 2000);
+      }
+    }, i * 200);
+  });
+}
+
+setTimeout(() => typeCommand(commands[0]), 800);
+
+// ── COUNTER ANIMATION ──
+const counters = document.querySelectorAll('[data-target]');
+const suffixes = { '50': 'ms', '99': '%' };
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      const suffix = suffixes[el.dataset.target] || '+';
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.round(current) + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 16);
+      observer.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+counters.forEach(c => observer.observe(c));
+
+// ── DOWNLOAD BUTTON CLICK FEEDBACK ──
+document.querySelectorAll('.platform-btn:not(.coming-soon)').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const orig = btn.querySelector('.platform-name').textContent;
+    btn.querySelector('.platform-name').textContent = '↓ Downloading...';
+    btn.style.borderColor = 'var(--accent)';
+    setTimeout(() => {
+      btn.querySelector('.platform-name').textContent = orig;
+      btn.style.borderColor = '';
+    }, 2000);
+  });
+});
+</script>
+</body>
+</html>
