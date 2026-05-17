@@ -376,6 +376,73 @@
   .term-green { color: var(--green); }
   .term-dim { color: var(--text3); }
 
+  /* ─── PREVIEW SECTION ─── */
+  .preview-section {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 80px;
+  }
+
+  .preview-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .preview-window {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 120px rgba(0, 212, 255, 0.08);
+    transition: box-shadow 0.3s;
+  }
+
+  .preview-window:hover {
+    box-shadow:
+      0 0 0 1px rgba(0,212,255,0.15),
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 160px rgba(0, 212, 255, 0.12);
+  }
+
+  .preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .preview-bar .p-dots { display: flex; gap: 6px; }
+
+  .preview-bar .p-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .preview-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .preview-caption {
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .preview-caption span { color: var(--accent); }
+
   /* ─── STATS ─── */
   .stats-bar {
     position: relative;
@@ -849,6 +916,30 @@
     </div>
   </div>
 </div>
+
+<!-- PREVIEW -->
+<section class="preview-section">
+  <div class="preview-inner">
+    <div class="section-header">
+      <div class="section-tag">// SCREENSHOT</div>
+      <h2 class="section-title">See It In Action</h2>
+    </div>
+    <div class="preview-window">
+      <div class="preview-bar">
+        <div class="p-dots">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div>
+        </div>
+        <span class="p-title">cerberus-ide — user.controller.ts — 1920×1080</span>
+      </div>
+      <img class="preview-img" src="preview.jpg" alt="Cerberus IDE Screenshot" />
+    </div>
+    <div class="preview-caption">
+      Cerberus IDE · <span>AI Assistant</span> · Multi-panel layout · Built-in terminal
+    </div>
+  </div>
+</section>
 
 <!-- STATS -->
 <div class="stats-bar">
