@@ -1,94 +1,55 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cerberus IDE — The Three-Headed Code Beast</title>
+<title>Cerberus IDE — Unleash Your Productivity</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;900&display=swap');
 
   :root {
-    --bg: #080b0f;
-    --bg2: #0d1117;
-    --bg3: #111820;
-    --surface: #161d26;
-    --border: #1e2d3d;
-    --border2: #243040;
-    --accent: #00d4ff;
-    --accent2: #7c3aed;
-    --accent3: #ff4757;
-    --green: #00ff88;
-    --yellow: #ffd700;
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --text3: #484f58;
-    --glow: 0 0 20px rgba(0, 212, 255, 0.3);
-    --glow2: 0 0 40px rgba(0, 212, 255, 0.15);
+    --bg: #0a0a0f;
+    --bg2: #0f0f18;
+    --bg3: #13131f;
+    --surface: #17172a;
+    --border: #1e1e35;
+    --border2: #2a2a45;
+    --accent: #7c3aed;
+    --accent-light: #a855f7;
+    --accent-glow: rgba(124, 58, 237, 0.4);
+    --green: #22c55e;
+    --cyan: #06b6d4;
+    --yellow: #eab308;
+    --text: #f1f0ff;
+    --text2: #9090b0;
+    --text3: #4a4a6a;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    cursor: default;
   }
 
-  /* ─── MATRIX RAIN CANVAS ─── */
-  #matrix-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    opacity: 0.04;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
-  /* ─── SCAN LINES ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.03) 2px,
-      rgba(0,0,0,0.03) 4px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* ─── GRID BACKGROUND ─── */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-image:
-      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ─── NAV ─── */
+  /* ── NAV ── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    padding: 16px 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(8, 11, 15, 0.85);
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10, 10, 15, 0.9);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
@@ -96,1016 +57,1062 @@
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.5px;
+    font-size: 17px;
     color: var(--text);
+    text-decoration: none;
   }
 
-  .nav-logo .logo-icon {
-    width: 36px;
-    height: 36px;
-    position: relative;
+  .nav-logo .wolf-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
   }
 
-  .nav-logo .logo-icon svg {
-    width: 100%; height: 100%;
-  }
-
-  .nav-logo .accent { color: var(--accent); }
+  .nav-logo .ide { color: var(--accent-light); }
 
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 28px;
     list-style: none;
   }
 
   .nav-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text2);
     text-decoration: none;
-    letter-spacing: 0.5px;
     transition: color 0.2s;
   }
 
-  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover { color: var(--text); }
 
-  .nav-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 4px 10px;
-    border: 1px solid var(--border2);
-    border-radius: 4px;
-    color: var(--text2);
-    background: var(--surface);
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
+  .nav-right {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 120px 48px 80px;
-    text-align: center;
+    gap: 16px;
   }
+
+  .nav-gh {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-gh:hover { color: var(--text); }
+
+  .btn-nav {
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-nav:hover {
+    background: var(--accent-light);
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 48px;
+    padding: 100px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60%; height: 100%;
+    background: radial-gradient(ellipse at 70% 50%, rgba(124,58,237,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 2; }
 
   .hero-tag {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 2px;
+    font-size: 12px;
+    color: var(--accent-light);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    padding: 6px 16px;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 5px 14px;
+    border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 100px;
-    background: rgba(0, 212, 255, 0.05);
-    margin-bottom: 32px;
+    background: rgba(124, 58, 237, 0.08);
+    margin-bottom: 28px;
+    font-family: 'JetBrains Mono', monospace;
   }
 
   .hero-tag .dot {
     width: 6px; height: 6px;
-    background: var(--accent);
+    background: var(--accent-light);
     border-radius: 50%;
     animation: pulse 2s infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.7); }
   }
 
   .hero h1 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(56px, 9vw, 120px);
+    font-size: clamp(48px, 5.5vw, 80px);
     font-weight: 800;
-    line-height: 1;
-    letter-spacing: -3px;
+    line-height: 1.05;
+    letter-spacing: -2px;
     margin-bottom: 8px;
   }
 
-  .hero h1 .line1 { color: var(--text); }
-  .hero h1 .line2 {
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(0, 212, 255, 0.4);
+  .hero h1 .ide-text {
+    color: var(--accent-light);
     display: block;
   }
 
-  .hero h1 .cursor {
-    display: inline-block;
-    width: 4px;
-    height: 0.85em;
-    background: var(--accent);
-    margin-left: 4px;
-    vertical-align: middle;
-    animation: blink 1s step-end infinite;
+  .hero-tagline {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 20px 0 12px;
+    line-height: 1.3;
   }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .hero-subtitle {
-    font-family: 'JetBrains Mono', monospace;
+  .hero-desc {
     font-size: 15px;
     color: var(--text2);
-    max-width: 560px;
-    line-height: 1.8;
-    margin: 28px auto 48px;
-    letter-spacing: 0.2px;
+    line-height: 1.7;
+    max-width: 440px;
+    margin-bottom: 36px;
   }
 
-  .hero-subtitle .hl { color: var(--accent); }
-
-  /* ─── CTA BUTTONS ─── */
-  .cta-group {
+  .hero-btns {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 64px;
+    margin-bottom: 28px;
   }
 
   .btn-primary {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 36px;
-    background: var(--accent);
-    color: #000;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    overflow: hidden;
-  }
-
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.4s;
-  }
-
-  .btn-primary:hover::before { left: 100%; }
-
-  .btn-primary:hover {
-    background: #22e5ff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.4);
-  }
-
-  .btn-primary svg { width: 18px; height: 18px; }
-
-  .btn-secondary {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 15px 32px;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 24px;
     background: transparent;
     color: var(--text2);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
     text-decoration: none;
+    border: 1px solid var(--border2);
     transition: all 0.2s;
   }
 
-  .btn-secondary:hover {
+  .btn-outline:hover {
     border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0, 212, 255, 0.05);
+    color: var(--text);
+    background: rgba(124,58,237,0.06);
   }
 
-  /* ─── VERSION INFO ─── */
-  .version-info {
+  .hero-platforms {
     display: flex;
     align-items: center;
-    gap: 24px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    gap: 16px;
+    font-size: 12px;
     color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
   }
 
-  .version-info .sep { opacity: 0.3; }
-  .version-info .v-tag { color: var(--green); }
+  .hero-platforms span { display: flex; align-items: center; gap: 5px; }
 
-  /* ─── TERMINAL WINDOW ─── */
-  .terminal-wrapper {
+  .hero-right {
     position: relative;
-    z-index: 2;
-    max-width: 800px;
-    margin: 0 auto 80px;
-    padding: 0 48px;
-  }
-
-  .terminal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.04),
-      0 32px 64px rgba(0,0,0,0.6),
-      0 0 80px rgba(0, 212, 255, 0.05);
-  }
-
-  .terminal-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
+    justify-content: center;
   }
 
-  .terminal-dots {
-    display: flex;
-    gap: 6px;
+  .wolf-glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glow-pulse 3s ease-in-out infinite;
   }
 
-  .dot-r { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
-  .dot-y { width: 12px; height: 12px; border-radius: 50%; background: #febc2e; }
-  .dot-g { width: 12px; height: 12px; border-radius: 50%; background: #28c840; }
-
-  .terminal-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    margin-left: 4px;
+  @keyframes glow-pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.7; }
   }
 
-  .terminal-body {
-    padding: 24px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 2;
-    min-height: 220px;
-  }
-
-  .term-line { display: flex; gap: 12px; }
-  .term-prompt { color: var(--green); white-space: nowrap; }
-  .term-cmd { color: var(--text); }
-  .term-out { color: var(--text2); padding-left: 0; }
-  .term-accent { color: var(--accent); }
-  .term-yellow { color: var(--yellow); }
-  .term-green { color: var(--green); }
-  .term-dim { color: var(--text3); }
-
-  /* ─── PREVIEW SECTION ─── */
-  .preview-section {
+  .wolf-img {
     position: relative;
-    z-index: 2;
-    padding: 0 48px 80px;
+    width: 90%;
+    max-width: 520px;
+    border-radius: 24px;
+    filter: drop-shadow(0 0 60px rgba(124,58,237,0.5));
+    animation: float 6s ease-in-out infinite;
   }
 
-  .preview-inner {
-    max-width: 1000px;
-    margin: 0 auto;
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
   }
 
-  .preview-window {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.04),
-      0 40px 80px rgba(0,0,0,0.7),
-      0 0 120px rgba(0, 212, 255, 0.08);
-    transition: box-shadow 0.3s;
-  }
-
-  .preview-window:hover {
-    box-shadow:
-      0 0 0 1px rgba(0,212,255,0.15),
-      0 40px 80px rgba(0,0,0,0.7),
-      0 0 160px rgba(0, 212, 255, 0.12);
-  }
-
-  .preview-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .preview-bar .p-dots { display: flex; gap: 6px; }
-
-  .preview-bar .p-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    margin-left: 4px;
-  }
-
-  .preview-img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-
-  .preview-caption {
-    text-align: center;
-    margin-top: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    letter-spacing: 1px;
-  }
-
-  .preview-caption span { color: var(--accent); }
-
-  /* ─── STATS ─── */
-  .stats-bar {
-    position: relative;
-    z-index: 2;
-    padding: 0 48px 80px;
-  }
-
-  .stats-inner {
-    max-width: 900px;
-    margin: 0 auto;
+  /* ── FEATURES STRIP ── */
+  .features-strip {
+    padding: 0 80px 80px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .stat-item {
-    padding: 32px 24px;
-    background: var(--bg2);
-    text-align: center;
-    transition: background 0.2s;
-  }
-
-  .stat-item:hover { background: var(--surface); }
-
-  .stat-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--accent);
-    letter-spacing: -1px;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* ─── FEATURES ─── */
-  .features {
-    position: relative;
-    z-index: 2;
-    padding: 0 48px 80px;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-
-  .section-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(28px, 4vw, 48px);
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--text);
-  }
-
-  .feature-grid {
-    max-width: 900px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
   }
 
-  .feature-card {
+  .feat-card {
     background: var(--bg2);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 28px 24px;
-    transition: all 0.2s;
+    transition: all 0.25s;
     position: relative;
     overflow: hidden;
   }
 
-  .feature-card::before {
+  .feat-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 1px;
+    height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     opacity: 0;
     transition: opacity 0.3s;
   }
 
-  .feature-card:hover {
-    border-color: var(--border2);
-    background: var(--surface);
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  .feat-card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+  .feat-card:hover::before { opacity: 1; }
+
+  .feat-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
   }
 
-  .feature-card:hover::before { opacity: 1; }
+  .feat-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
 
-  .feature-icon {
-    width: 40px; height: 40px;
-    border-radius: 8px;
-    background: rgba(0, 212, 255, 0.1);
-    border: 1px solid rgba(0, 212, 255, 0.2);
+  .feat-card p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── TERMINAL SECTION ── */
+  .terminal-section {
+    padding: 0 80px 80px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(26px, 3.5vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .terminal-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .terminal {
+    background: #0d0d18;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 32px 64px rgba(0,0,0,0.6),
+      0 0 100px rgba(124,58,237,0.08);
+  }
+
+  .term-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: #0a0a14;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .term-dots { display: flex; gap: 6px; }
+  .td-r { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .td-y { width: 12px; height: 12px; border-radius: 50%; background: #febc2e; }
+  .td-g { width: 12px; height: 12px; border-radius: 50%; background: #28c840; }
+
+  .term-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .term-body {
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    min-height: 240px;
+  }
+
+  .tl { display: flex; gap: 12px; }
+  .tp { color: #22c55e; white-space: nowrap; }
+  .tc { color: var(--text); }
+  .to { color: var(--text2); }
+  .ta { color: #06b6d4; }
+  .ty { color: #eab308; }
+  .tg { color: #22c55e; }
+  .td { color: var(--text3); }
+
+  /* ── IDE MOCKUP ── */
+  .mockup-section {
+    padding: 0 80px 80px;
+  }
+
+  .ide-window {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #0d0d18;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 140px rgba(124,58,237,0.1);
+    transition: box-shadow 0.3s;
+  }
+
+  .ide-window:hover {
+    box-shadow:
+      0 0 0 1px rgba(124,58,237,0.2),
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 180px rgba(124,58,237,0.15);
+  }
+
+  .ide-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #080810;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ide-title-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .ide-preview-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ── WHY SECTION ── */
+  .why-section {
+    padding: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    border-top: 1px solid var(--border);
+  }
+
+  .why-left h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .why-left h3 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .why-left p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .why-checks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .why-checks li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  .why-checks li::before {
+    content: '✓';
+    width: 22px; height: 22px;
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
-    font-size: 18px;
+    font-size: 11px;
+    color: var(--accent-light);
+    flex-shrink: 0;
+    font-weight: 700;
   }
 
-  .feature-card h3 {
-    font-family: 'JetBrains Mono', monospace;
+  .why-right {}
+
+  .integrations-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .integrations-box h4 {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text);
-    margin-bottom: 8px;
+    margin-bottom: 16px;
   }
 
-  .feature-card p {
-    font-size: 13px;
+  .int-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .int-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
     color: var(--text2);
-    line-height: 1.7;
+    transition: border-color 0.2s;
   }
 
-  /* ─── DOWNLOAD SECTION ─── */
-  .download-section {
-    position: relative;
-    z-index: 2;
-    padding: 0 48px 80px;
+  .int-item:hover { border-color: var(--accent); color: var(--text); }
+
+  .themes-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
   }
 
-  .download-box {
-    max-width: 900px;
-    margin: 0 auto;
+  .themes-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-light);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .themes-box h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .themes-box p { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
+
+  .theme-previews {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .theme-thumb {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: flex-end;
+    padding: 4px;
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .theme-thumb.active { border-color: var(--accent); }
+  .theme-thumb:hover { border-color: var(--accent-light); }
+
+  .t1 { background: linear-gradient(135deg, #0d0d18, #17172a, #1e1e35); }
+  .t2 { background: linear-gradient(135deg, #1e2a3a, #2a3a4a, #1a2a3a); }
+  .t3 { background: linear-gradient(135deg, #1a1a2e, #221133, #2d1b4e); }
+  .t4 { background: linear-gradient(135deg, #002b36, #073642, #0a4f5e); }
+
+  /* ── CTA BANNER ── */
+  .cta-section {
+    padding: 0 80px 80px;
+  }
+
+  .cta-box {
     background: var(--bg2);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 48px;
+    padding: 48px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
     position: relative;
     overflow: hidden;
   }
 
-  .download-box::before {
+  .cta-box::before {
     content: '';
     position: absolute;
     top: -1px; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--accent2), var(--accent), var(--green));
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-light), transparent);
   }
 
-  .download-glow {
+  .cta-glow {
     position: absolute;
     top: -80px; right: -80px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
     pointer-events: none;
   }
 
-  .download-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-    gap: 24px;
-  }
-
-  .download-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-  }
-
-  .download-desc {
-    font-size: 14px;
-    color: var(--text2);
-    line-height: 1.6;
-    max-width: 400px;
-  }
-
-  .release-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-  }
-
-  .release-badge .ver {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--green);
-  }
-
-  .release-badge .date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .download-platforms {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-
-  .platform-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 20px 20px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .platform-btn::after {
-    content: attr(data-size);
-    position: absolute;
-    top: 12px; right: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-  }
-
-  .platform-btn:hover {
-    border-color: var(--accent);
-    background: rgba(0, 212, 255, 0.04);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-
-  .platform-btn.coming-soon {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .platform-btn.coming-soon:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: none;
-  }
-
-  .platform-os {
-    font-size: 22px;
-  }
-
-  .platform-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .platform-arch {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .platform-coming {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    padding: 3px 8px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--bg);
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    position: relative;
-    z-index: 2;
-    padding: 40px 48px;
-    border-top: 1px solid var(--border);
+  .cta-left {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .footer-logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+  .cta-wolf {
+    width: 52px; height: 52px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .cta-text h3 {
+    font-size: 22px;
     font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .cta-text p {
+    font-size: 14px;
     color: var(--text2);
   }
 
-  .footer-logo span { color: var(--accent); }
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 56px 80px 32px;
+  }
 
-  .footer-copy {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand .nav-logo {
+    margin-bottom: 16px;
+    font-size: 15px;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
     color: var(--text3);
+    line-height: 1.6;
+    max-width: 220px;
   }
 
-  .footer-links {
-    display: flex;
-    gap: 24px;
+  .footer-col h5 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 16px;
   }
 
-  .footer-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .footer-col ul a {
+    font-size: 13px;
     color: var(--text3);
     text-decoration: none;
     transition: color 0.2s;
   }
 
-  .footer-links a:hover { color: var(--accent); }
+  .footer-col ul a:hover { color: var(--accent-light); }
 
-  /* ─── SCROLLBAR ─── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-  /* ─── GLOW ORBS ─── */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-    filter: blur(80px);
+  .footer-subscribe h5 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 16px;
   }
 
-  .orb-1 {
-    width: 600px; height: 600px;
-    top: -200px; left: -200px;
-    background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+  .footer-subscribe p {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    line-height: 1.5;
   }
 
-  .orb-2 {
-    width: 500px; height: 500px;
-    bottom: 100px; right: -150px;
-    background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+  .subscribe-form {
+    display: flex;
+    gap: 8px;
   }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    nav { padding: 14px 20px; }
+  .subscribe-form input {
+    flex: 1;
+    padding: 9px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .subscribe-form input:focus { border-color: var(--accent); }
+  .subscribe-form input::placeholder { color: var(--text3); }
+
+  .subscribe-form button {
+    padding: 9px 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 14px;
+  }
+
+  .subscribe-form button:hover { background: var(--accent-light); }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer-bottom-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-bottom-links a {
+    font-size: 12px;
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer-bottom-links a:hover { color: var(--accent-light); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; padding: 100px 40px 60px; text-align: center; }
+    .hero-right { justify-content: center; }
+    .wolf-img { max-width: 380px; }
+    .hero-desc { margin: 0 auto 36px; }
+    .hero-btns { justify-content: center; }
+    .hero-platforms { justify-content: center; }
+    .features-strip { grid-template-columns: repeat(2, 1fr); padding: 0 40px 60px; }
+    .terminal-section { padding: 0 40px 60px; }
+    .mockup-section { padding: 0 40px 60px; }
+    .why-section { grid-template-columns: 1fr; padding: 60px 40px; }
+    .cta-section { padding: 0 40px 60px; }
+    .cta-box { flex-direction: column; text-align: center; padding: 36px; }
+    .cta-left { flex-direction: column; align-items: center; }
+    footer { padding: 40px 40px 24px; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+    nav { padding: 0 24px; }
     .nav-links { display: none; }
-    .hero { padding: 100px 20px 60px; }
-    .hero h1 { font-size: 48px; letter-spacing: -2px; }
-    .terminal-wrapper { padding: 0 20px; }
-    .stats-inner { grid-template-columns: repeat(2, 1fr); }
-    .features { padding: 0 20px 60px; }
-    .feature-grid { grid-template-columns: 1fr; }
-    .download-section { padding: 0 20px 60px; }
-    .download-platforms { grid-template-columns: 1fr; }
-    footer { padding: 28px 20px; flex-direction: column; align-items: flex-start; }
-    .stats-bar { padding: 0 20px 60px; }
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 90px 20px 50px; }
+    .features-strip { grid-template-columns: 1fr; padding: 0 20px 50px; }
+    .int-grid { grid-template-columns: repeat(2, 1fr); }
+    .theme-previews { grid-template-columns: repeat(2, 1fr); }
+    footer { padding: 32px 20px 20px; }
+    .footer-top { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<canvas id="matrix-canvas"></canvas>
-
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="18" cy="18" r="17" stroke="#00d4ff" stroke-width="1.5" opacity="0.3"/>
-        <path d="M10 26 L10 10 L14 14 L18 10 L22 14 L26 10 L26 26" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <circle cx="10" cy="10" r="2.5" fill="#00d4ff"/>
-        <circle cx="18" cy="10" r="2.5" fill="#00d4ff"/>
-        <circle cx="26" cy="10" r="2.5" fill="#00d4ff"/>
-        <path d="M10 26 L26 26" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-      </svg>
-    </div>
-    CERBERUS<span class="accent">IDE</span>
-  </div>
+  <a href="#" class="nav-logo">
+    <div class="wolf-icon">🐺</div>
+    CERBERUS <span class="ide">IDE</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
-    <li><a href="#download">Download</a></li>
-    <li><a href="https://github.com" target="_blank">GitHub</a></li>
-    <li><a href="#">Docs</a></li>
+    <li><a href="#">Documentation</a></li>
+    <li><a href="#">Plugins</a></li>
+    <li><a href="#">Themes</a></li>
+    <li><a href="#">Roadmap</a></li>
+    <li><a href="#">Support</a></li>
   </ul>
-  <div class="nav-badge">v1.0.0 — STABLE</div>
+  <div class="nav-right">
+    <a href="https://github.com/juniorusaa/cerberuside" target="_blank" class="nav-gh">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="#download" class="btn-nav">Download</a>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">
-    <span class="dot"></span>
-    Three Heads. One IDE. Infinite Power.
+  <div class="hero-left">
+    <div class="hero-tag"><span class="dot"></span> Next-Generation IDE</div>
+    <h1>
+      CERBERUS
+      <span class="ide-text">IDE</span>
+    </h1>
+    <p class="hero-tagline">Unleash your productivity.<br>Tame every project.</p>
+    <p class="hero-desc">Cerberus IDE is a next-generation integrated development environment built for speed, customization and power.</p>
+    <div class="hero-btns">
+      <a href="#download" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download for Windows
+      </a>
+      <a href="https://github.com/juniorusaa/cerberuside" target="_blank" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+    <div class="hero-platforms">
+      <span>🪟 Windows</span>
+      <span>🍎 macOS</span>
+      <span>🐧 Linux</span>
+    </div>
   </div>
 
-  <h1>
-    <span class="line1">CERBERUS</span>
-    <span class="line2">IDE<span class="cursor"></span></span>
-  </h1>
-
-  <p class="hero-subtitle">
-    The <span class="hl">three-headed</span> code beast that guards your workflow.<br>
-    Terminal-native. Lightning fast. Built for the <span class="hl">ones who ship</span>.
-  </p>
-
-  <div class="cta-group">
-    <a href="#download" class="btn-primary">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Download Now — Free
-    </a>
-    <a href="https://github.com" target="_blank" class="btn-secondary">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-      </svg>
-      View on GitHub
-    </a>
-  </div>
-
-  <div class="version-info">
-    <span class="v-tag">v1.0.0</span>
-    <span class="sep">|</span>
-    <span>MIT License</span>
-    <span class="sep">|</span>
-    <span>Cross-Platform</span>
-    <span class="sep">|</span>
-    <span>Open Source</span>
+  <div class="hero-right">
+    <div class="wolf-glow"></div>
+    <img class="wolf-img" src="wolf.jpg" alt="Cerberus — Three-Headed Wolf" />
   </div>
 </section>
 
-<!-- TERMINAL -->
-<div class="terminal-wrapper">
-  <div class="terminal">
-    <div class="terminal-header">
-      <div class="terminal-dots">
-        <div class="dot-r"></div>
-        <div class="dot-y"></div>
-        <div class="dot-g"></div>
-      </div>
-      <span class="terminal-title">cerberus-ide — bash — 120×40</span>
-    </div>
-    <div class="terminal-body" id="term-body">
-      <div class="term-line">
-        <span class="term-prompt">cerberus@ide:~$</span>
-        <span class="term-cmd" id="typed-cmd"></span>
-      </div>
-    </div>
+<!-- FEATURES STRIP -->
+<div class="features-strip" id="features">
+  <div class="feat-card">
+    <div class="feat-icon">⚡</div>
+    <h3>Blazing Fast</h3>
+    <p>Optimized performance that keeps you in the flow. Sub-50ms cold start.</p>
+  </div>
+  <div class="feat-card">
+    <div class="feat-icon">🔌</div>
+    <h3>Extensible</h3>
+    <p>Powerful plugin system to fit your workflow. 2400+ extensions available.</p>
+  </div>
+  <div class="feat-card">
+    <div class="feat-icon">🧠</div>
+    <h3>Smart Coding</h3>
+    <p>Advanced IntelliSense, refactoring and built-in AI assistance.</p>
+  </div>
+  <div class="feat-card">
+    <div class="feat-icon">🛡️</div>
+    <h3>Secure</h3>
+    <p>Built-in security tools to protect your code and your pipeline.</p>
   </div>
 </div>
 
-<!-- PREVIEW -->
-<section class="preview-section">
-  <div class="preview-inner">
-    <div class="section-header">
-      <div class="section-tag">// SCREENSHOT</div>
-      <h2 class="section-title">See It In Action</h2>
-    </div>
-    <div class="preview-window">
-      <div class="preview-bar">
-        <div class="p-dots">
-          <div class="dot-r"></div>
-          <div class="dot-y"></div>
-          <div class="dot-g"></div>
-        </div>
-        <span class="p-title">cerberus-ide — user.controller.ts — 1920×1080</span>
-      </div>
-      <img class="preview-img" src="preview.jpg" alt="Cerberus IDE Screenshot" />
-    </div>
-    <div class="preview-caption">
-      Cerberus IDE · <span>AI Assistant</span> · Multi-panel layout · Built-in terminal
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <div class="stat-num" data-target="128">0</div>
-      <div class="stat-label">Languages</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="50">0</div>
-      <div class="stat-label">ms Startup</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="2400">0</div>
-      <div class="stat-label">Extensions</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="99">0</div>
-      <div class="stat-label">% Uptime</div>
-    </div>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<section class="features" id="features">
+<!-- TERMINAL SECTION -->
+<section class="terminal-section">
   <div class="section-header">
-    <div class="section-tag">// CAPABILITIES</div>
-    <h2 class="section-title">Three Heads, One Vision</h2>
+    <div class="section-eyebrow">// TERMINAL</div>
+    <h2 class="section-title">Native CLI. Fully Integrated.</h2>
   </div>
-
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h3>Blazing Fast</h3>
-      <p>Sub-50ms cold start. Written in systems-level code for maximum performance. No Electron. No bloat.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🧠</div>
-      <h3>AI-Powered Core</h3>
-      <p>Built-in intelligence for code completion, refactoring, and bug detection. Context-aware from the first keystroke.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔌</div>
-      <h3>Extensible</h3>
-      <p>2400+ extensions. Full LSP support. Bring your own plugins. The ecosystem you love, without the overhead.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🖥️</div>
-      <h3>Terminal-Native</h3>
-      <p>Deeply integrated terminal multiplexer. Split panes, sessions, history. Code and shell as one.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <h3>Remote Ready</h3>
-      <p>SSH, containers, WSL — edit anything, anywhere. Remote editing feels exactly like local.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎨</div>
-      <h3>Fully Themeable</h3>
-      <p>128-color terminal themes. Custom syntax highlighting. Your editor, your aesthetic. Always dark, always sharp.</p>
+  <div class="terminal-wrapper">
+    <div class="terminal">
+      <div class="term-header">
+        <div class="term-dots">
+          <div class="td-r"></div>
+          <div class="td-y"></div>
+          <div class="td-g"></div>
+        </div>
+        <span class="term-title">cerberus-ide — bash — 120×40</span>
+      </div>
+      <div class="term-body" id="term-body"></div>
     </div>
   </div>
 </section>
 
-<!-- DOWNLOAD -->
-<section class="download-section" id="download">
-  <div class="download-box">
-    <div class="download-glow"></div>
-
-    <div class="download-header">
-      <div>
-        <div class="download-title">Download Cerberus IDE</div>
-        <div class="download-desc">Free and open source. Always. Pick your platform and start shipping.</div>
+<!-- IDE MOCKUP -->
+<section class="mockup-section">
+  <div class="section-header">
+    <div class="section-eyebrow">// PREVIEW</div>
+    <h2 class="section-title">See It In Action</h2>
+  </div>
+  <div class="ide-window">
+    <div class="ide-titlebar">
+      <div class="term-dots">
+        <div class="td-r"></div>
+        <div class="td-y"></div>
+        <div class="td-g"></div>
       </div>
-      <div class="release-badge">
-        <div class="ver">v1.0.0</div>
-        <div class="date">STABLE RELEASE</div>
+      <span class="ide-title-text">Cerberus IDE — user.controller.ts</span>
+    </div>
+    <img class="ide-preview-img" src="preview.jpg" alt="Cerberus IDE Interface" />
+  </div>
+</section>
+
+<!-- WHY SECTION -->
+<section class="why-section">
+  <div class="why-left">
+    <h2>WHY CERBERUS IDE?</h2>
+    <h3>Built by developers,<br>for developers.</h3>
+    <p>We created Cerberus IDE to combine power, speed and flexibility in a dark, beautiful package. Every feature is crafted to keep you in flow.</p>
+    <ul class="why-checks">
+      <li>Modern &amp; intuitive UI</li>
+      <li>Cross-platform (Windows, macOS, Linux)</li>
+      <li>Open source &amp; community driven</li>
+      <li>Regular updates &amp; improvements</li>
+    </ul>
+    <a href="#" class="btn-outline" style="width:fit-content">Learn More →</a>
+  </div>
+
+  <div class="why-right">
+    <div class="integrations-box">
+      <h4>Seamless Integrations</h4>
+      <div class="int-grid">
+        <div class="int-item">🐙 Git &amp; GitHub</div>
+        <div class="int-item">🐳 Docker</div>
+        <div class="int-item">⬡ Node.js</div>
+        <div class="int-item">🐍 Python</div>
+        <div class="int-item">☁️ AWS</div>
+        <div class="int-item">+ More</div>
       </div>
     </div>
 
-    <div class="download-platforms">
-      <a href="#" class="platform-btn" data-size="~85 MB" id="win-btn">
-        <div class="platform-os">🪟</div>
-        <div class="platform-name">Windows</div>
-        <div class="platform-arch">x64 / ARM64 · .exe installer</div>
-      </a>
-
-      <a href="#" class="platform-btn" data-size="~78 MB" id="mac-btn">
-        <div class="platform-os">🍎</div>
-        <div class="platform-name">macOS</div>
-        <div class="platform-arch">Intel + Apple Silicon · .dmg</div>
-      </a>
-
-      <a href="#" class="platform-btn" data-size="~72 MB" id="linux-btn">
-        <div class="platform-os">🐧</div>
-        <div class="platform-name">Linux</div>
-        <div class="platform-arch">.deb / .rpm / AppImage</div>
-      </a>
+    <div class="themes-box">
+      <div class="themes-eyebrow">MADE IT YOURS</div>
+      <h4>Themes &amp; Customization</h4>
+      <p>Personalize every detail. Tons of themes, icons, fonts and settings.</p>
+      <div class="theme-previews">
+        <div class="theme-thumb t1 active">Cerberus Dark</div>
+        <div class="theme-thumb t2">Nordic</div>
+        <div class="theme-thumb t3">Dracula</div>
+        <div class="theme-thumb t4">Solarized</div>
+      </div>
+      <a href="#" class="btn-outline" style="font-size:13px;padding:9px 18px;width:fit-content">Explore Themes</a>
     </div>
+  </div>
+</section>
 
+<!-- CTA BANNER -->
+<section class="cta-section" id="download">
+  <div class="cta-box">
+    <div class="cta-glow"></div>
+    <div class="cta-left">
+      <div class="cta-wolf">🐺</div>
+      <div class="cta-text">
+        <h3>Ready to unleash your potential?</h3>
+        <p>Join thousands of developers already using Cerberus IDE.</p>
+      </div>
+    </div>
+    <a href="#" class="btn-primary" style="font-size:15px;padding:16px 36px;white-space:nowrap" id="dl-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Now
+    </a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">CERBERUS<span>IDE</span></div>
-  <div class="footer-copy">© 2024 CerberusIDE. Open source. MIT License.</div>
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">License</a>
-    <a href="#">Changelog</a>
-    <a href="https://github.com" target="_blank">GitHub</a>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">
+        <div class="wolf-icon">🐺</div>
+        CERBERUS <span class="ide">IDE</span>
+      </a>
+      <p>A next-generation IDE designed to make you unstoppable.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Plugins</a></li>
+        <li><a href="#">Themes</a></li>
+        <li><a href="#">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Community</h5>
+      <ul>
+        <li><a href="https://github.com/juniorusaa/cerberuside" target="_blank">GitHub</a></li>
+        <li><a href="#">Discord</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Contribute</a></li>
+      </ul>
+    </div>
+    <div class="footer-subscribe">
+      <h5>Stay Updated</h5>
+      <p>Get notified about new releases and features.</p>
+      <div class="subscribe-form">
+        <input type="email" placeholder="your@email.com" />
+        <button>→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Cerberus IDE. All rights reserved.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">License</a>
+    </div>
   </div>
 </footer>
 
 <script>
-// ── MATRIX RAIN ──
-const canvas = document.getElementById('matrix-canvas');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01ABCDEF</>{}[]()';
-const fontSize = 14;
-let cols = Math.floor(canvas.width / fontSize);
-let drops = Array(cols).fill(1);
-
-function drawMatrix() {
-  ctx.fillStyle = 'rgba(8, 11, 15, 0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#00d4ff';
-  ctx.font = fontSize + 'px JetBrains Mono';
-
-  for (let i = 0; i < drops.length; i++) {
-    const char = chars[Math.floor(Math.random() * chars.length)];
-    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
-    drops[i]++;
-  }
-}
-
-setInterval(drawMatrix, 50);
-
 // ── TERMINAL TYPEWRITER ──
 const commands = [
   { cmd: 'cerberus --version', out: [
-    '<span class="term-green">Cerberus IDE v1.0.0</span>',
-    '<span class="term-dim">Build: stable · Runtime: native · Heads: 3</span>'
+    '<span class="tg">Cerberus IDE v1.0.0</span>',
+    '<span class="td">Build: stable · Runtime: native · Heads: 3</span>'
   ]},
   { cmd: 'cerberus run --project ./my-app', out: [
-    '<span class="term-accent">▶ Starting Cerberus IDE...</span>',
-    '<span class="term-green">✓ LSP servers initialized (128ms)</span>',
-    '<span class="term-green">✓ Extensions loaded: 2,400+</span>',
-    '<span class="term-yellow">⚡ Ready in 47ms</span>'
+    '<span class="ta">▶ Starting Cerberus IDE...</span>',
+    '<span class="tg">✓ LSP servers initialized (128ms)</span>',
+    '<span class="tg">✓ Extensions loaded: 2,400+</span>',
+    '<span class="ty">⚡ Ready in 47ms</span>'
   ]},
   { cmd: 'cerberus install --extension ai-copilot', out: [
-    '<span class="term-dim">Fetching: ai-copilot@2.4.1...</span>',
-    '<span class="term-green">✓ Installed successfully</span>',
-    '<span class="term-accent">↻ Reload to activate</span>'
+    '<span class="td">Fetching: ai-copilot@2.4.1...</span>',
+    '<span class="tg">✓ Installed successfully</span>',
+    '<span class="ta">↻ Reload to activate</span>'
   ]}
 ];
 
@@ -1113,82 +1120,58 @@ const termBody = document.getElementById('term-body');
 let cmdIdx = 0;
 
 function typeCommand(cmdObj) {
-  const cmdEl = document.createElement('div');
-  cmdEl.className = 'term-line';
-  cmdEl.innerHTML = '<span class="term-prompt">cerberus@ide:~$</span><span class="term-cmd"></span>';
-  termBody.appendChild(cmdEl);
-  const span = cmdEl.querySelector('.term-cmd');
+  const line = document.createElement('div');
+  line.className = 'tl';
+  line.innerHTML = '<span class="tp">cerberus@ide:~$</span><span class="tc"></span>';
+  termBody.appendChild(line);
+  const span = line.querySelector('.tc');
   let i = 0;
-
-  const typing = setInterval(() => {
+  const t = setInterval(() => {
     span.textContent = cmdObj.cmd.slice(0, ++i);
     if (i >= cmdObj.cmd.length) {
-      clearInterval(typing);
+      clearInterval(t);
       setTimeout(() => showOutput(cmdObj.out), 300);
     }
-  }, 40);
+  }, 38);
 }
 
 function showOutput(lines) {
   lines.forEach((line, i) => {
     setTimeout(() => {
       const div = document.createElement('div');
-      div.className = 'term-line';
-      div.innerHTML = '<span class="term-out">' + line + '</span>';
+      div.className = 'tl';
+      div.innerHTML = '<span class="to">' + line + '</span>';
       termBody.appendChild(div);
-
       if (i === lines.length - 1) {
         setTimeout(() => {
-          if (termBody.children.length > 20) {
-            while (termBody.children.length > 2) {
-              termBody.removeChild(termBody.firstChild);
-            }
+          if (termBody.children.length > 18) {
+            while (termBody.children.length > 2) termBody.removeChild(termBody.firstChild);
           }
           cmdIdx = (cmdIdx + 1) % commands.length;
-          setTimeout(() => typeCommand(commands[cmdIdx]), 1000);
-        }, 2000);
+          setTimeout(() => typeCommand(commands[cmdIdx]), 900);
+        }, 2200);
       }
-    }, i * 200);
+    }, i * 180);
   });
 }
 
-setTimeout(() => typeCommand(commands[0]), 800);
+setTimeout(() => typeCommand(commands[0]), 600);
 
-// ── COUNTER ANIMATION ──
-const counters = document.querySelectorAll('[data-target]');
-const suffixes = { '50': 'ms', '99': '%' };
+// ── DOWNLOAD CLICK ──
+document.getElementById('dl-btn').addEventListener('click', e => {
+  e.preventDefault();
+  const btn = e.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '↓ Downloading...';
+  btn.style.opacity = '0.8';
+  setTimeout(() => { btn.innerHTML = orig; btn.style.opacity = ''; }, 2000);
+});
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const target = parseInt(el.dataset.target);
-      const suffix = suffixes[el.dataset.target] || '+';
-      let current = 0;
-      const step = target / 60;
-      const timer = setInterval(() => {
-        current = Math.min(current + step, target);
-        el.textContent = Math.round(current) + suffix;
-        if (current >= target) clearInterval(timer);
-      }, 16);
-      observer.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
-
-counters.forEach(c => observer.observe(c));
-
-// ── DOWNLOAD BUTTON CLICK FEEDBACK ──
-document.querySelectorAll('.platform-btn:not(.coming-soon)').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const orig = btn.querySelector('.platform-name').textContent;
-    btn.querySelector('.platform-name').textContent = '↓ Downloading...';
-    btn.style.borderColor = 'var(--accent)';
-    setTimeout(() => {
-      btn.querySelector('.platform-name').textContent = orig;
-      btn.style.borderColor = '';
-    }, 2000);
+// ── THEME PICKER ──
+document.querySelectorAll('.theme-thumb').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.theme-thumb').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
   });
 });
 </script>
