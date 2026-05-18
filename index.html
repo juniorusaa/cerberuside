@@ -753,10 +753,45 @@ function showOut(lines) {
 
 setTimeout(() => typeCmd(cmds[0]), 500);
 
-// ── THEME PICKER ──
+// ── THEME SWITCHER ──
+const themes = {
+  'cerberus-dark': {
+    '--bg':'#08080e','--bg2':'#0e0e1a','--bg3':'#121220',
+    '--surface':'#16162a','--border':'#1c1c35','--border2':'#28285a',
+    '--accent':'#7c3aed','--accent-light':'#a855f7','--accent-hover':'#9333ea',
+    '--glow':'rgba(124,58,237,0.35)','--text':'#f4f4ff','--text2':'#8888aa','--text3':'#44446a',
+  },
+  'nordic': {
+    '--bg':'#0d1117','--bg2':'#161b22','--bg3':'#1c2128',
+    '--surface':'#21262d','--border':'#2a3340','--border2':'#3a4a5a',
+    '--accent':'#3b82f6','--accent-light':'#60a5fa','--accent-hover':'#2563eb',
+    '--glow':'rgba(59,130,246,0.35)','--text':'#e6edf3','--text2':'#7d8590','--text3':'#444c56',
+  },
+  'dracula': {
+    '--bg':'#191724','--bg2':'#1f1d2e','--bg3':'#26233a',
+    '--surface':'#2a2740','--border':'#3a3650','--border2':'#4a4560',
+    '--accent':'#c678dd','--accent-light':'#e09fef','--accent-hover':'#b455cc',
+    '--glow':'rgba(198,120,221,0.35)','--text':'#e2e0e7','--text2':'#908caa','--text3':'#524f67',
+  },
+  'solarized': {
+    '--bg':'#001b20','--bg2':'#002b36','--bg3':'#073642',
+    '--surface':'#0a3e4e','--border':'#104050','--border2':'#1a5060',
+    '--accent':'#2aa198','--accent-light':'#4ec9bf','--accent-hover':'#1d8a82',
+    '--glow':'rgba(42,161,152,0.35)','--text':'#fdf6e3','--text2':'#839496','--text3':'#455b60',
+  }
+};
+const themeKeys = ['cerberus-dark','nordic','dracula','solarized'];
+const allThemeCards = document.querySelectorAll('.theme-card');
+
 function selectTheme(el) {
-  document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+  allThemeCards.forEach(c => c.classList.remove('active'));
   el.classList.add('active');
+  const idx = Array.from(allThemeCards).indexOf(el) % 4;
+  const t = themes[themeKeys[idx]];
+  const root = document.documentElement;
+  document.body.style.transition = 'background .4s, color .4s';
+  Object.entries(t).forEach(([k,v]) => root.style.setProperty(k,v));
+  setTimeout(() => { document.body.style.transition = ''; }, 500);
 }
 
 // ── DOWNLOAD FEEDBACK ──
