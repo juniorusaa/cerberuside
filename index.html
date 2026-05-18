@@ -71,6 +71,22 @@
   }
   .btn-dl:hover { background:var(--accent-hover); box-shadow:0 4px 24px var(--glow); }
 
+  /* ─── DİL SEÇİCİ ─── */
+  .lang-switcher {
+    display:flex; align-items:center; gap:2px;
+    background:var(--bg3); border:1px solid var(--border2);
+    border-radius:8px; overflow:hidden; padding:2px;
+  }
+  .lang-btn {
+    padding:5px 12px; border-radius:6px;
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    font-weight:700; letter-spacing:1px; cursor:pointer;
+    border:none; background:transparent; color:var(--text3);
+    transition:all .2s;
+  }
+  .lang-btn.active { background:var(--accent); color:#fff; }
+  .lang-btn:hover:not(.active) { color:var(--text2); }
+
   /* ─── HERO ─── */
   .hero {
     min-height:100vh;
@@ -430,19 +446,23 @@
     CERBERUS <span class="c-ide">IDE</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#">Documentation</a></li>
-    <li><a href="#">Plugins</a></li>
-    <li><a href="#">Themes</a></li>
-    <li><a href="#">Roadmap</a></li>
-    <li><a href="#">Support</a></li>
+    <li><a href="#features" data-tr="Özellikler" data-en="Features">Özellikler</a></li>
+    <li><a href="#" data-tr="Döküman" data-en="Documentation">Döküman</a></li>
+    <li><a href="#" data-tr="Eklentiler" data-en="Plugins">Eklentiler</a></li>
+    <li><a href="#" data-tr="Temalar" data-en="Themes">Temalar</a></li>
+    <li><a href="#" data-tr="Yol Haritası" data-en="Roadmap">Yol Haritası</a></li>
+    <li><a href="#" data-tr="Destek" data-en="Support">Destek</a></li>
   </ul>
   <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('tr')">TR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
     <a href="https://github.com/juniorusaa/cerberuside" target="_blank" class="nav-gh">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
       GitHub
     </a>
-    <a href="#download" class="btn-dl">Download</a>
+    <a href="#download" class="btn-dl" data-tr="İndir" data-en="Download">İndir</a>
   </div>
 </nav>
 
@@ -453,18 +473,18 @@
   <div class="hero-grid"></div>
 
   <div class="hero-left">
-    <div class="hero-badge"><span class="dot"></span>Next-Generation IDE</div>
+    <div class="hero-badge"><span class="dot"></span><span data-tr="Yeni Nesil IDE" data-en="Next-Generation IDE">Yeni Nesil IDE</span></div>
     <h1>CERBERUS<span class="ide">IDE</span></h1>
-    <p class="hero-tagline">Unleash your productivity.<br>Tame every project.</p>
-    <p class="hero-desc">Cerberus IDE is a next-generation integrated development environment built for speed, customization and power.</p>
+    <p class="hero-tagline" data-tr="Verimliliğini serbest bırak.<br>Her projeye hükmet." data-en="Unleash your productivity.<br>Tame every project.">Verimliliğini serbest bırak.<br>Her projeye hükmet.</p>
+    <p class="hero-desc" data-tr="Cerberus IDE, hız, özelleştirme ve güç için tasarlanmış yeni nesil entegre geliştirme ortamıdır." data-en="Cerberus IDE is a next-generation integrated development environment built for speed, customization and power.">Cerberus IDE, hız, özelleştirme ve güç için tasarlanmış yeni nesil entegre geliştirme ortamıdır.</p>
     <div class="hero-btns">
       <a href="#download" class="btn-primary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download for Windows
+        <span data-tr="Windows için İndir" data-en="Download for Windows">Windows için İndir</span>
       </a>
       <a href="https://github.com/juniorusaa/cerberuside" target="_blank" class="btn-ghost">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-        View on GitHub
+        <span data-tr="GitHub'da Gör" data-en="View on GitHub">GitHub'da Gör</span>
       </a>
     </div>
     <div class="hero-platforms">
@@ -485,32 +505,32 @@
 <div class="feat-strip" id="features">
   <div class="feat-card">
     <div class="feat-icon">⚡</div>
-    <h3>Blazing Fast</h3>
-    <p>Optimized performance that keeps you in the flow. Sub-50ms cold start, no bloat.</p>
+    <h3 data-tr="İnanılmaz Hızlı" data-en="Blazing Fast">İnanılmaz Hızlı</h3>
+    <p data-tr="Sizi akışta tutan optimize performans. 50ms altı soğuk başlatma, şişkinlik yok." data-en="Optimized performance that keeps you in the flow. Sub-50ms cold start, no bloat.">Sizi akışta tutan optimize performans. 50ms altı soğuk başlatma, şişkinlik yok.</p>
   </div>
   <div class="feat-card">
     <div class="feat-icon">🔌</div>
-    <h3>Extensible</h3>
-    <p>Powerful plugin system to fit your workflow. 2400+ extensions available.</p>
+    <h3 data-tr="Genişletilebilir" data-en="Extensible">Genişletilebilir</h3>
+    <p data-tr="İş akışınıza uyan güçlü eklenti sistemi. 2400+ uzantı mevcut." data-en="Powerful plugin system to fit your workflow. 2400+ extensions available.">İş akışınıza uyan güçlü eklenti sistemi. 2400+ uzantı mevcut.</p>
   </div>
   <div class="feat-card">
     <div class="feat-icon">🧠</div>
-    <h3>Smart Coding</h3>
-    <p>Advanced IntelliSense, refactoring and AI assistance built right in.</p>
+    <h3 data-tr="Akıllı Kodlama" data-en="Smart Coding">Akıllı Kodlama</h3>
+    <p data-tr="Gelişmiş IntelliSense, yeniden düzenleme ve dahili yapay zeka yardımı." data-en="Advanced IntelliSense, refactoring and AI assistance built right in.">Gelişmiş IntelliSense, yeniden düzenleme ve dahili yapay zeka yardımı.</p>
   </div>
   <div class="feat-card">
     <div class="feat-icon">🛡️</div>
-    <h3>Secure</h3>
-    <p>Built-in security tools to protect your code and your pipeline.</p>
+    <h3 data-tr="Güvenli" data-en="Secure">Güvenli</h3>
+    <p data-tr="Kodunuzu ve pipeline'ınızı korumak için dahili güvenlik araçları." data-en="Built-in security tools to protect your code and your pipeline.">Kodunuzu ve pipeline'ınızı korumak için dahili güvenlik araçları.</p>
   </div>
 </div>
 
 <!-- TERMINAL -->
 <section class="sec" style="padding-top:90px;padding-bottom:80px;background:var(--bg)">
   <div class="sec-head">
-    <div class="sec-eye">// TERMINAL</div>
-    <h2 class="sec-title">Native CLI. Fully Integrated.</h2>
-    <p class="sec-sub">Deep terminal integration. Split panes, sessions, and history — code and shell as one.</p>
+    <div class="sec-eye" data-tr="// TERMİNAL" data-en="// TERMINAL">// TERMİNAL</div>
+    <h2 class="sec-title" data-tr="Yerel CLI. Tam Entegre." data-en="Native CLI. Fully Integrated.">Yerel CLI. Tam Entegre.</h2>
+    <p class="sec-sub" data-tr="Derin terminal entegrasyonu. Bölünmüş paneller, oturumlar ve geçmiş — kod ve kabuk tek bir arada." data-en="Deep terminal integration. Split panes, sessions, and history — code and shell as one.">Derin terminal entegrasyonu. Bölünmüş paneller, oturumlar ve geçmiş — kod ve kabuk tek bir arada.</p>
   </div>
   <div class="terminal-wrap">
     <div class="terminal">
@@ -528,9 +548,9 @@
 <!-- IDE MOCKUP -->
 <section class="sec">
   <div class="sec-head">
-    <div class="sec-eye">// PREVIEW</div>
-    <h2 class="sec-title">See It In Action</h2>
-    <p class="sec-sub">A modern, powerful interface designed for developers who demand the best.</p>
+    <div class="sec-eye" data-tr="// ÖN İZLEME" data-en="// PREVIEW">// ÖN İZLEME</div>
+    <h2 class="sec-title" data-tr="Aksiyonda Görün" data-en="See It In Action">Aksiyonda Görün</h2>
+    <p class="sec-sub" data-tr="En iyisini talep eden geliştiriciler için tasarlanmış modern, güçlü arayüz." data-en="A modern, powerful interface designed for developers who demand the best.">En iyisini talep eden geliştiriciler için tasarlanmış modern, güçlü arayüz.</p>
   </div>
   <div class="ide-window">
     <div class="ide-bar">
@@ -547,14 +567,14 @@
 <section class="sec">
   <div class="why-grid">
     <div class="why-left">
-      <h2>WHY CERBERUS IDE?</h2>
-      <h3>Built by developers,<br>for developers.</h3>
-      <p>We created Cerberus IDE to combine power, speed and flexibility in a dark, beautiful package. Every feature crafted to keep you in flow.</p>
+      <h2 data-tr="NEDEN CERBERUS IDE?" data-en="WHY CERBERUS IDE?">NEDEN CERBERUS IDE?</h2>
+      <h3 data-tr="Geliştiriciler tarafından,<br>geliştiriciler için." data-en="Built by developers,<br>for developers.">Geliştiriciler tarafından,<br>geliştiriciler için.</h3>
+      <p data-tr="Cerberus IDE'yi güç, hız ve esnekliği karanlık, güzel bir pakette birleştirmek için yarattık. Her özellik sizi akışta tutmak için tasarlandı." data-en="We created Cerberus IDE to combine power, speed and flexibility in a dark, beautiful package. Every feature crafted to keep you in flow.">Cerberus IDE'yi güç, hız ve esnekliği karanlık, güzel bir pakette birleştirmek için yarattık. Her özellik sizi akışta tutmak için tasarlandı.</p>
       <ul class="checks">
-        <li><span class="ck">✓</span>Modern &amp; intuitive UI</li>
-        <li><span class="ck">✓</span>Cross-platform (Windows, macOS, Linux)</li>
-        <li><span class="ck">✓</span>Open source &amp; community driven</li>
-        <li><span class="ck">✓</span>Regular updates &amp; improvements</li>
+        <li><span class="ck">✓</span><span data-tr="Modern &amp; sezgisel arayüz" data-en="Modern &amp; intuitive UI">Modern &amp; sezgisel arayüz</span></li>
+        <li><span class="ck">✓</span><span data-tr="Çapraz platform (Windows, macOS, Linux)" data-en="Cross-platform (Windows, macOS, Linux)">Çapraz platform (Windows, macOS, Linux)</span></li>
+        <li><span class="ck">✓</span><span data-tr="Açık kaynak &amp; topluluk odaklı" data-en="Open source &amp; community driven">Açık kaynak &amp; topluluk odaklı</span></li>
+        <li><span class="ck">✓</span><span data-tr="Düzenli güncellemeler &amp; iyileştirmeler" data-en="Regular updates &amp; improvements">Düzenli güncellemeler &amp; iyileştirmeler</span></li>
       </ul>
       <a href="#" class="btn-ghost" style="width:fit-content">Learn More →</a>
     </div>
@@ -593,9 +613,9 @@
 <!-- INTEGRATIONS FULL -->
 <section class="sec" style="background:var(--bg2)">
   <div class="sec-head">
-    <div class="sec-eye">// ECOSYSTEM</div>
-    <h2 class="sec-title">Seamless Integrations</h2>
-    <p class="sec-sub">Works with the tools you already love. Connect your entire stack in one place.</p>
+    <div class="sec-eye" data-tr="// EKOSİSTEM" data-en="// ECOSYSTEM">// EKOSİSTEM</div>
+    <h2 class="sec-title" data-tr="Sorunsuz Entegrasyonlar" data-en="Seamless Integrations">Sorunsuz Entegrasyonlar</h2>
+    <p class="sec-sub" data-tr="Zaten sevdiğiniz araçlarla çalışır. Tüm stack'inizi tek bir yerde bağlayın." data-en="Works with the tools you already love. Connect your entire stack in one place.">Zaten sevdiğiniz araçlarla çalışır. Tüm stack'inizi tek bir yerde bağlayın.</p>
   </div>
   <div class="int-grid">
     <div class="int-item"><div class="int-icon">🐙</div><div class="int-label">Git &amp; GitHub</div></div>
@@ -636,8 +656,8 @@
     <div class="cta-left">
       <div class="cta-icon">🐺</div>
       <div class="cta-text">
-        <h3>Ready to unleash your potential?</h3>
-        <p>Join thousands of developers already using Cerberus IDE.</p>
+        <h3 data-tr="Potansiyelini serbest bırakmaya hazır mısın?" data-en="Ready to unleash your potential?">Potansiyelini serbest bırakmaya hazır mısın?</h3>
+        <p data-tr="Cerberus IDE'yi kullanan binlerce geliştiriciye katıl." data-en="Join thousands of developers already using Cerberus IDE.">Cerberus IDE'yi kullanan binlerce geliştiriciye katıl.</p>
       </div>
     </div>
     <a href="#" class="btn-primary" style="font-size:15px;padding:16px 40px;white-space:nowrap" id="dl-btn">
@@ -655,7 +675,7 @@
         <div class="icon">🐺</div>
         CERBERUS <span class="c-ide">IDE</span>
       </div>
-      <p>A next-generation IDE designed to make you unstoppable.</p>
+      <p data-tr="Sizi durdurulamaz kılmak için tasarlanmış yeni nesil IDE." data-en="A next-generation IDE designed to make you unstoppable.">Sizi durdurulamaz kılmak için tasarlanmış yeni nesil IDE.</p>
     </div>
     <div class="footer-col">
       <h5>Product</h5>
@@ -694,7 +714,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2024 Cerberus IDE. All rights reserved.</p>
+    <p>© 2024 Cerberus IDE. Tüm hakları saklıdır." data-en="© 2024 Cerberus IDE. All rights reserved.">© 2024 Cerberus IDE. Tüm hakları saklıdır.</p>
     <div class="foot-links">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms of Service</a>
@@ -799,7 +819,26 @@ function selectTheme(el) {
   setTimeout(() => { document.body.style.transition = ''; }, 500);
 }
 
-// ── DOWNLOAD FEEDBACK ──
+// ── DİL SİSTEMİ ──
+let currentLang = 'tr';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + lang);
+    if (text) el.innerHTML = text;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+  document.documentElement.lang = lang === 'tr' ? 'tr' : 'en';
+  document.title = lang === 'tr'
+    ? 'Cerberus IDE — Verimliliğini Serbest Bırak'
+    : 'Cerberus IDE — Unleash Your Productivity';
+}
+
+// Sayfa Türkçe başlasın
+setLang('tr');
 document.getElementById('dl-btn').addEventListener('click', e => {
   e.preventDefault();
   const b = e.currentTarget, orig = b.innerHTML;
